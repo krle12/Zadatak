@@ -1,19 +1,18 @@
-import React from 'react';
-import {
-  Container,
-  Row,
-  Col
-} from 'reactstrap';
+import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
+import './App.css';
+import  Form  from './views/Form';
 
-const App = () => {
+export const App = () => {
   return (
-    <Container>
-    <div>
-      <h1>App</h1>
-    </div>
-    </Container>
+
+    <Router>
+      <Switch>
+        <Route exact path="/" component={Form} />
+      </Switch>
+    </Router>
+    
   );
 }
 
-
 export default App;
+
