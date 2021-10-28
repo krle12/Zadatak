@@ -2,8 +2,9 @@ import  mongoose  from "mongoose";
 
 const formInputType = mongoose.Schema({
     label: {type: String,},
-    input: {type: String},
+    type: {type: String},
     name: {value: String},
+    options: [],
 });
 
 const formInput = mongoose.model('formInput', formInputType);
