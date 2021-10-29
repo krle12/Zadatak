@@ -6,14 +6,10 @@ import formInputType from "../models/formInputType.js"
 const router = express.Router();
 
 router.post("/insert", async (req, res) => {
-    const formData = new formDataValue({
-        title: req.body.title,
-        subtitle: req.body.subtitle,
-        mileage: req.body.mileage,
-        horsepower: req.body.horsepower,
-        accessories: req.body.accessories,
-        description: req.body.description,
-    });
+   const formData = new formDataValue({
+       values: req.body
+   })
+
     formData.save(function (err, Data) {
         if (err) {
             console.log(err);

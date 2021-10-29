@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 
 export const Form = () => {
     const [formInput, setFormInput] = useState();
+    const [formData, setFormData] = useState({});
 
     useEffect(() => {
         const formIput = async () => {
@@ -14,7 +15,17 @@ export const Form = () => {
 
     }, [])
 
+    const handleChange = (event) => {
+        setFormData(prevState =>({
+            ...prevState,
+            [event.target.name]: event.target.value
+        }));
+      };
 
+      const hanndleSubmit = async (event) => {
+        event.preventDefault(); 
+        await axios.post("http://localhost:5000/api/form/insert", formData)         
+    }
 
     const renderFields = (formInput) => {
         return formInput?.map(input => {
@@ -22,44 +33,47 @@ export const Form = () => {
             switch (Type) {
                 case 'text':
                     return (
-                        <Grid item lg={12} xs={12} sm={6}>
-                            <TextField label={Label} type={Type} name={Name} variant="outlined" fullWidth required ></TextField>
+                        <Grid key={Name} item lg={12} xs={12} sm={6}>
+                            <TextField label={Label} type={Type} name={Name} variant="outlined" fullWidth required onChange={handleChange}></TextField>
                         </Grid>
                     )
                 case 'number':
                     return (
-                        <Grid item lg={12} xs={12} sm={6}>
-                            <TextField label={Label} type={Type} name={Name} variant="outlined" fullWidth required ></TextField>
+                        <Grid  key={Name} item lg={12} xs={12} sm={6}>
+                            <TextField label={Label} type={Type} name={Name} variant="outlined" fullWidth required onChange={handleChange}></TextField>
                         </Grid>
                     )
                 case 'checkbox':
                     return (
-                        <Grid item lg={12} xs={12} sm={6}>
+                        <Grid key={Name} item lg={12} xs={12} sm={6}>
                             <label>{Label} </label>
-                            <Checkbox type={Type} name={Name} variant="outlined" fullWidth required ></Checkbox >
+                            <Checkbox type={Type} name={Name} variant="outlined"  required onChange={handleChange} value="true"></Checkbox >
                         </Grid>
                     )
                 case 'select':
                     return (
-                        <Grid item lg={12} xs={12} sm={6}>
+                        <>
+                        {Options &&
+                        <Grid key={Name} item lg={12} xs={12} sm={6}>
                             <InputLabel id="demo-simple-select-label">{Label}</InputLabel>
 
-                            <Select labelId="demo-simple-select-label" id="demo-simple-select" fullWidth label={Label} required>
-                                {Options.map((option, _idx) => <MenuItem value={10}>{option}</MenuItem>)}
+                            <Select labelId="demo-simple-select-label" id="demo-simple-select" fullWidth label={Label} name={Name} required onChange={handleChange}>
+                                { Options.map((option, _idx) => <MenuItem value={option}>{option}</MenuItem>)}
                             </Select>
-                        </Grid>
+                        </Grid>}
+                        </>
                     )
 
                 case 'radiobutton':
                     return (
-                        <Grid item lg={12} xs={12} sm={6}>
-                            <FormControlLabel value="female" control={<Radio />} label="Female" required/>
+                        <Grid key={Name} item lg={12} xs={12} sm={6}>
+                            <FormControlLabel name={Name} value="female" control={<Radio />} label={Label} required onChange={handleChange}/>
                         </Grid>
                     )
                 case 'date':
                     return (
-                        <Grid item lg={12} xs={12} sm={6}>
-                            <TextField  type={Type} name={Name} variant="outlined" fullWidth required ></TextField>
+                        <Grid key={Name} item lg={12} xs={12} sm={6}>
+                            <TextField  type={Type} name={Name} variant="outlined" fullWidth required  onChange={handleChange}></TextField>
                         </Grid>
                     )
                 default:
@@ -74,10 +88,6 @@ export const Form = () => {
         })
     }
 
-    const hanndleSubmit = (event) => {
-        event.preventDefault();
-        console.log(event.target);
-    }
 
     return (
         <>
