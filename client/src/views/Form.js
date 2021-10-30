@@ -1,6 +1,6 @@
 import { Button, CardContent, Checkbox, Container, FormControlLabel, Grid, InputLabel, MenuItem, Radio, Select, TextField } from "@material-ui/core";
-import axios from "axios";
 import { useEffect, useState } from 'react';
+import { getFormData, saveFormData } from "../api/api";
 
 export const Form = () => {
     const [formInput, setFormInput] = useState();
@@ -8,7 +8,7 @@ export const Form = () => {
 
     useEffect(() => {
         const formIput = async () => {
-            const { data } = await axios.get("http://localhost:5000/api/form");
+            const data = await getFormData()
             setFormInput(data);
         }
         formIput();
@@ -24,7 +24,7 @@ export const Form = () => {
 
       const hanndleSubmit = async (event) => {
         event.preventDefault(); 
-        await axios.post("http://localhost:5000/api/form/insert", formData)         
+        saveFormData(formData).then (() => setFormData({}))      
     }
 
     const renderFields = (formInput) => {
@@ -34,20 +34,20 @@ export const Form = () => {
                 case 'text':
                     return (
                         <Grid key={Name} item lg={12} xs={12} sm={6}>
-                            <TextField label={Label} type={Type} name={Name} variant="outlined" fullWidth required onChange={handleChange}></TextField>
+                            <TextField label={Label} type={Type} name={Name} variant="outlined" value={formData[Name] ?? ''} fullWidth required onChange={handleChange}></TextField>
                         </Grid>
                     )
                 case 'number':
                     return (
                         <Grid  key={Name} item lg={12} xs={12} sm={6}>
-                            <TextField label={Label} type={Type} name={Name} variant="outlined" fullWidth required onChange={handleChange}></TextField>
+                            <TextField label={Label} type={Type} name={Name} variant="outlined" value={formData[Name] ?? ''} fullWidth required onChange={handleChange}></TextField>
                         </Grid>
                     )
                 case 'checkbox':
                     return (
                         <Grid key={Name} item lg={12} xs={12} sm={6}>
                             <label>{Label} </label>
-                            <Checkbox type={Type} name={Name} variant="outlined"  required onChange={handleChange} value="true"></Checkbox >
+                            <Checkbox type={Type} name={Name} variant="outlined"  required onChange={handleChange} value="true" checked={ !!formData[Name]}></Checkbox >
                         </Grid>
                     )
                 case 'select':
@@ -57,23 +57,22 @@ export const Form = () => {
                         <Grid key={Name} item lg={12} xs={12} sm={6}>
                             <InputLabel id="demo-simple-select-label">{Label}</InputLabel>
 
-                            <Select labelId="demo-simple-select-label" id="demo-simple-select" fullWidth label={Label} name={Name} required onChange={handleChange}>
+                            <Select labelId="demo-simple-select-label" id="demo-simple-select" fullWidth label={Label} name={Name} value={formData[Name] ?? ''} required onChange={handleChange}>
                                 { Options.map((option, _idx) => <MenuItem value={option}>{option}</MenuItem>)}
                             </Select>
                         </Grid>}
                         </>
                     )
-
                 case 'radiobutton':
                     return (
                         <Grid key={Name} item lg={12} xs={12} sm={6}>
-                            <FormControlLabel name={Name} value="female" control={<Radio />} label={Label} required onChange={handleChange}/>
+                            <FormControlLabel name={Name} value="female" control={<Radio />} label={Label} checked={ !!formData[Name]} required onChange={handleChange}/>
                         </Grid>
                     )
                 case 'date':
                     return (
                         <Grid key={Name} item lg={12} xs={12} sm={6}>
-                            <TextField  type={Type} name={Name} variant="outlined" fullWidth required  onChange={handleChange}></TextField>
+                            <TextField  type={Type} name={Name} variant="outlined" fullWidth value={formData[Name] ?? ''} required  onChange={handleChange}></TextField>
                         </Grid>
                     )
                 default:
